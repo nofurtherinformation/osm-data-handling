@@ -124,8 +124,8 @@ def combine_all_states():
     return gdfs.dissolve(by='dissolve_on')
 
 # remove stale files
-def clean_up(state):
-    os.remove(f"./{state}.osm.pbf")
+def clean_up(state, filename):
+    os.remove(f"./{filename}")
     os.remove(f"./{state}_green.osm.pbf")
     os.remove(f"./{state}.gpkg")
     # os.remove(f"./{state}_dissolved.gpkg")
@@ -151,7 +151,7 @@ if __name__ == "__main__":
         dissolve_data(state)
         print(f"{state} dissolved")
 
-        clean_up(state)
+        clean_up(state, filename)
 
     full_gdf = combine_all_states()
     full_gdf.to_file("all_states_dissolved.gpkg", driver="GPKG")
