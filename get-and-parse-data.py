@@ -6,6 +6,7 @@ import fiona
 import subprocess
 import os
 from glob import glob
+import wget
 # %%
 
 # All US states currnetly included in geofabrik's OSM extracts
@@ -78,21 +79,12 @@ def get_state_data(state):
     # Fetch the data from geofabric's OSM extracts
     url = get_url(clean_state(state))
     print(f"Fetching data for {state}: {url}")
-    local_filename=f'./{state}.osm.pbf'
-    # NOTE the stream=True parameter below
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        with open(local_filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192): 
-                # If you have chunk encoded response uncomment if
-                # and set chunk_size parameter to None.
-                #if chunk: 
-                f.write(chunk)
-    return local_filename
+    filename = wget.download(url)
+    return filename
 
 # Extract osm query
-def extract_data(state):
-    command = f'''osmium tags-filter -o {state}_green.osm.pbf {state}.osm.pbf \
+def extract_data(filename, state):
+    command = f'''osmium tags-filter -o {state}_green.osm.pbf {filename} \
         a/nature=wood \        
         a/leisure=nature_reserve \
         a/landuse=recreation_ground \
@@ -147,10 +139,10 @@ if __name__ == "__main__":
         state = stateInfo["state"]
         print(f"{idx}/{len(states)}: {state}")
 
-        download = get_state_data(state)
-        print(f"Downloaded {state}, {download}")
+        filename = get_state_data(state)
+        print(f"Downloaded {state}, {filename}")
 
-        extract_data(state)
+        extract_data(filename, state)
         print(f"{state} extracted")
 
         convert_data(state)
