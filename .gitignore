@@ -1,0 +1,4 @@
+
+*.gpkg
+*.gpkg-shm
+*.gpkg-wal

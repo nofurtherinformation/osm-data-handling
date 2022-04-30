@@ -83,8 +83,8 @@ def get_state_data(state):
     return filename
 
 # Extract osm query
-def extract_data(filename, state):
-    command = f'''osmium tags-filter -o {state}_green.osm.pbf {filename} \
+def extract_data(state):
+    command = f'''osmium tags-filter -o {state}_green.osm.pbf {state}-latest.osm.pbf \
         a/nature=wood \        
         a/leisure=nature_reserve \
         a/landuse=recreation_ground \
@@ -125,7 +125,7 @@ def combine_all_states():
 
 # remove stale files
 def clean_up(state, filename):
-    os.remove(f"./{filename}")
+    os.remove(f"./{state}-latest.osm.pbf")
     os.remove(f"./{state}_green.osm.pbf")
     os.remove(f"./{state}.gpkg")
     # os.remove(f"./{state}_dissolved.gpkg")
@@ -136,13 +136,13 @@ def clean_up_all_states():
 # %%
 if __name__ == "__main__":
     for idx, stateInfo in enumerate(states):
-        state = stateInfo["state"]
+        state = clean_state(stateInfo["state"])
         print(f"{idx}/{len(states)}: {state}")
 
         filename = get_state_data(state)
-        print(f"Downloaded {state}, {filename}")
+        print(f"Downloaded {state}")
 
-        extract_data(filename, state)
+        extract_data(state)
         print(f"{state} extracted")
 
         convert_data(state)
