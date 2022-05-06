@@ -1,7 +1,7 @@
 import geopandas as gpd
 import pandas as pd
 from tqdm import tqdm
-from multiprocessing import Pool
+# from multiprocessing import Pool
 
 states = gpd.read_file("https://raw.githubusercontent.com/GeoDaCenter/covid/master/public/geojson/state_usafacts.geojson")[["GEOID","NAME"]]
 states["NAME"] = states["NAME"].str.replace(' ', '-').str.lower()
