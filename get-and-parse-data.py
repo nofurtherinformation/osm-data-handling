@@ -85,19 +85,18 @@ def get_state_data(state):
 # Extract osm query
 def extract_data(state):
     command = f'''osmium tags-filter -o {state}_green.osm.pbf {state}-latest.osm.pbf \
-        a/nature=wood \        
-        a/leisure=nature_reserve \
-        a/landuse=recreation_ground \
-        a/landuse=grass \
-        a/landuse=forest \
-        a/landuse=cemetery \
-        a/leisure=garden'''
+        natural=wood \        
+        leisure=nature_reserve \
+        landuse=recreation_ground \
+        landuse=grass \
+        landuse=forest \
+        landuse=cemetery \
+        leisure=garden'''
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
 
 # convert to gpkg
 def convert_data(state):
-    # command = f'''ogr2ogr -f "GPKG" my_file_output.gpkg {my_input_file}.geojson'''
     command = f'''ogr2ogr -f GPKG {state}.gpkg {state}_green.osm.pbf'''
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
@@ -128,7 +127,6 @@ def clean_up(state, filename):
     os.remove(f"./{state}-latest.osm.pbf")
     os.remove(f"./{state}_green.osm.pbf")
     os.remove(f"./{state}.gpkg")
-    # os.remove(f"./{state}_dissolved.gpkg")
 
 def clean_up_all_states():
     for state in states:
@@ -151,7 +149,7 @@ if __name__ == "__main__":
         dissolve_data(state)
         print(f"{state} dissolved")
 
-        clean_up(state, filename)
+        # clean_up(state, filename)
 
-    full_gdf = combine_all_states()
-    full_gdf.to_file("all_states_dissolved.gpkg", driver="GPKG")
+    # full_gdf = combine_all_states()
+    # full_gdf.to_file("all_states_dissolved.gpkg", driver="GPKG")

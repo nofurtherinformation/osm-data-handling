@@ -2,3 +2,5 @@
 *.gpkg
 *.gpkg-shm
 *.gpkg-wal
+*.pbf
+*.tmp
